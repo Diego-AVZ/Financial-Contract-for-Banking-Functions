@@ -50,11 +50,53 @@ contract personalAccount {
         balanceETH = balanceETH - amount;
         payments memory newPayment = payments(receiver, amount);
         payList.push(newPayment);
+        // addFee fee = amount*((1/3)/100)
     }
 
     function payFromAddress(address receiver) public payable {
         require(msg.value <= address(msg.sender).balance);
         depositETH();
         payFromContract(receiver, msg.value);
+        // addFee fee = amount*((1/3)/100)
     }
+
+    mapping(string => address) public searchAddress;
+
+    struct yourContacts{
+        address Contact;
+        string name;
+    }
+
+    yourContacts[] public contactList;
+
+    function addContact(address newContact, string memory name) public {
+        searchAddress[name] = newContact;
+        yourContacts memory newYourContacts = yourContacts(newContact, name);
+        contactList.push(newYourContacts);
+    }
+
+    struct family {
+        address familyAddress;
+        string familyName;
+    }
+    
+    family[] familyList;
+    mapping(address => bool) public isFamilyMember;
+
+    function addFamily(address member, string memory name) public {
+        family memory newFamily = family(member, name);
+        familyList.push(newFamily);
+        isFamilyMember[member] = true;
+    }
+
+    modifier onlyFamily() {
+        require(isFamilyMember[msg.sender] = true, "NotFamily");
+        _;
+    }
+
+    function seeFamily(uint index) public view returns(address, string memory){
+        family memory selectedFamily = familyList[index];
+        return(selectedFamily.familyAddress, selectedFamily.familyName);
+    }
+
 }
