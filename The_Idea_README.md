@@ -1,8 +1,8 @@
-# Financial Contract for Banking Functions
+# Financial Contract for Banking Functions #
 
 **Solidity** is one of the most common languages for **Decentralized Finance**.
 
-## What if I can build an easy-to-use, bank-like, fully decentralized app for individuals financial services?
+## What if I can build an easy-to-use, bank-like, fully decentralized app for individuals financial services? ##
 
 **Let's Begin!**
 
