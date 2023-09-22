@@ -10,18 +10,25 @@ contract CreatePersonalAccount{ //Factory
 
     mapping(address => address) public yourContract;
 
-    function createAccount() public {
-        personalAccount newPersonalAccount = new personalAccount(msg.sender);
+    function createAccount(string memory name, string memory id) public {
+        personalAccount newPersonalAccount = new personalAccount(msg.sender, name, id);
         yourContract[msg.sender] = address(newPersonalAccount);
     }
 }
 
+// Personal Account
+
 contract personalAccount {
 
     address public owner;
+    string public ownerName;
+    string public ownerId;
 
-    constructor (address _owner) {
+    constructor (address _owner, string memory _name, string memory id) {
         owner = _owner;
+        ownerName = _name;
+        ownerId = id;
+
     }
 
     modifier onlyOwner () {
@@ -34,30 +41,47 @@ contract personalAccount {
     struct payments{
         address to;
         uint amount;
+        string concept;
     }
     
     payments[] payList;
 
     function depositETH() public payable {
-        balanceETH = balanceETH + msg.value;
+        balanceETH = balanceETH + (msg.value - (msg.value/fee));
+        payable(protocolAddress).transfer(msg.value/fee);
+        feesPaidCount = feesPaidCount + (msg.value/fee);
     }
 
+    function getContractBalanceEth() public view returns(uint){
+        return(balanceETH);
+    }
+
+    function getAddressBalanceETH() public view returns(uint){
+        return(owner.balance);
+    }
+
+    address protocolAddress = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; // My Address
+    uint public feesPaidCount;
     uint public balanceETH;
+    uint256 fee = 900;  // 1/1000 = 0.1% fee
 
-    function payFromContract(address receiver, uint amount) public onlyOwner {
+    function payFromContract(address receiver, uint amount, string memory concept) public onlyOwner {
         require(amount <= balanceETH);
-        payable(receiver).transfer(amount);
+        payable(receiver).transfer(amount - amount/fee);
+        payable(protocolAddress).transfer(amount/fee);
         balanceETH = balanceETH - amount;
-        payments memory newPayment = payments(receiver, amount);
-        payList.push(newPayment);
-        // addFee fee = amount*((1/3)/100)
+        feesPaidCount = feesPaidCount + amount/fee;
+        payments memory newPayment = payments(receiver, amount, concept);
+        payList.push(newPayment);  
+        
     }
 
-    function payFromAddress(address receiver) public payable {
+    function payFromAddress(address receiver,  string memory concept) public payable {
         require(msg.value <= address(msg.sender).balance);
         depositETH();
-        payFromContract(receiver, msg.value);
-        // addFee fee = amount*((1/3)/100)
+        payFromContract(receiver, msg.value, concept);
+        payments memory newPayment = payments(receiver, msg.value, concept);
+        payList.push(newPayment);
     }
 
     mapping(string => address) public searchAddress;
@@ -99,4 +123,12 @@ contract personalAccount {
         return(selectedFamily.familyAddress, selectedFamily.familyName);
     }
 
+
+    function requirePayment(address to, uint amount, string memory concept) public {
+        //Función para solicitar pagos tipo Bizum
+    }
+
+    //Una función en el contrato madre que registra (addr que pide, amount y concepto)
+    //Sería un mapping(address del que debe => struct).
+    
 }
