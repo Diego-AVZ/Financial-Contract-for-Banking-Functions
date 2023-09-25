@@ -63,7 +63,7 @@ contract personalAccount {
     address protocolAddress = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4; // My Address
     uint public feesPaidCount;
     uint public balanceETH;
-    uint256 fee = 900;  // 1/1000 = 0.1% fee
+    uint256 fee = 900;
 
     function payFromContract(address receiver, uint amount, string memory concept) public onlyOwner {
         require(amount <= balanceETH);
