@@ -114,7 +114,7 @@ contract personalAccount {
     }
 
     modifier onlyFamily() {
-        require(isFamilyMember[msg.sender] = true, "NotFamily");
+        require(isFamilyMember[msg.sender] == true, "NotFamily");
         _;
     }
 
