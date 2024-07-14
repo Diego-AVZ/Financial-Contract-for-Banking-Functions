@@ -8,7 +8,7 @@
 
 ---
 
-##First Contract: **The mother contract.** #
+##First Contract: **The mother contract.** ##
 
 It is a Simple Factory Contract that creates a new account for the user, registers the username, ID, and the user's address in the `createAccount` function. Also, that function associates the `msg.sender` address with the new contract address in the `mapping(address => address) public yourContract`
 
