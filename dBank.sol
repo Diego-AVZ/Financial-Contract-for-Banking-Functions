@@ -127,8 +127,5 @@ contract personalAccount {
     function requirePayment(address to, uint amount, string memory concept) public {
         //Función para solicitar pagos tipo Bizum
     }
-
-    //Una función en el contrato madre que registra (addr que pide, amount y concepto)
-    //Sería un mapping(address del que debe => struct).
     
 }
